@@ -1,7 +1,38 @@
-<script context="module">
-    import GameBoard from '../components/GameBoard.svelte';
-	console.log("hello");
-</script>
+
+<script>
+	import GameBoard from '../components/GameBoard.svelte';
+	import { onDestroy } from 'svelte';
+
+    let canvasWidth = 120;
+    let canvasHeight = 96;
+    let isPlaying = false;
+    const acron = [
+        [72, 64],[73,64],[73,62],[75,63],[76,64],[77,64],[78,64]
+			]
+	let speed = 50;
+	let updateInterval;
+	
+	const setUpdateInterval = (fn) => {
+		updateInterval = setInterval(() => {
+                fn();
+			}, speed);
+	}
+	
+
+	const togglePlay = (fn) => {
+		if(isPlaying) {
+			clearInterval(updateInterval);
+		}
+		else {
+			setUpdateInterval(fn);
+		}
+		isPlaying = !isPlaying;
+	}
+
+	onDestroy(() => {
+		clearInterval(updateInterval);
+	})
+	</script>
 
 <style>
 	.gol-container {
@@ -16,6 +47,11 @@
 
 <div class="gol-container">
     <div id="game">
-        <GameBoard />
+		<GameBoard 
+			design={acron} 
+			canvasHeight={canvasHeight}	
+			canvasWidth={canvasWidth}
+			toggle={togglePlay}
+		/>
     </div>
 </div>
